@@ -1,6 +1,7 @@
-import h from "../package/html-elements.ts"
-import css from "../package/css-manager.ts"
 
+import h from "../package/core/html-elements.ts"
+import css from "../package/core/css-manager.ts"
+import Button from "../package/ui/button.ts"
 
 function App() {
   const page = h.Div()
@@ -10,9 +11,13 @@ function App() {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh"
-  }))
+  }), 'dark')
 
-  h.Button(page, "Hello World")
+  Button({
+    parent: page,
+    variant: "filled",
+    text: "Hello World"
+  })
   return page;
 }
 
