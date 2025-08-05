@@ -4,7 +4,6 @@ interface CSSObject {
 }
 
 const style = document.head.appendChild(document.createElement("style"));
-const sheet = style.sheet;
 
 // We use a hashing algorithim; djb2 to generate classnames, because
 // crypto.randomUUID is not as OP as i thought. -> The styles keep
@@ -30,7 +29,7 @@ function generateclassname(object: any): string {
   return "gg" + (hash >>> 0).toString(36).slice(-6);
 }
 
-export function css(css: Partial<CSSValue & CSSObject>, classname?: string) {
+export default function css(css: Partial<CSSValue & CSSObject>, classname?: string) {
   if (!css && typeof css !== "object" && Array.isArray(css)) {
     throw Error("The parameter passed into the $css function is not an object or is null.");
   }
