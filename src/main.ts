@@ -15,7 +15,9 @@ function App() {
 
   Button({
     parent: page,
-    variant: "text",
+    variant: "tonal",
+    shape: "square",
+    size: "xl",
     text: "Hello World"
   })
   return page;
