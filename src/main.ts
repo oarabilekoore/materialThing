@@ -15,7 +15,7 @@ function App() {
 
   Button({
     parent: page,
-    variant: "filled",
+    variant: "text",
     text: "Hello World"
   })
   return page;

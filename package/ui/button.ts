@@ -1,4 +1,4 @@
-// Button Component Following Material Design Guide From 
+// Button Component Following Material Design Guide From
 // https://m3.material.io/components/buttons/specs
 
 import h from "../core/html-elements.ts";
@@ -18,37 +18,97 @@ interface ButtonProperties extends materialThingElement {
 // -----------------------------------------------------------------------------
 // Size utility classes (M3-ish sizing)
 // -----------------------------------------------------------------------------
-const xsm = css({ padding: "12px", height: "32px", fontSize: "12px", gap: "8px", display: "inline-flex", alignItems: "center", justifyContent: "center", lineHeight: "1" });
-const sm = css({ padding: "16px", height: "40px", fontSize: "14px", gap: "10px", display: "inline-flex", alignItems: "center", justifyContent: "center", lineHeight: "1" });
-const md = css({ padding: "20px", height: "48px", fontSize: "16px", gap: "12px", display: "inline-flex", alignItems: "center", justifyContent: "center", lineHeight: "1" });
-const lg = css({ padding: "24px", height: "56px", fontSize: "18px", gap: "14px", display: "inline-flex", alignItems: "center", justifyContent: "center", lineHeight: "1" });
-const xl = css({ padding: "32px", height: "72px", fontSize: "20px", gap: "16px", display: "inline-flex", alignItems: "center", justifyContent: "center", lineHeight: "1" });
+const xsm = css({
+  padding: "12px",
+  height: "32px",
+  fontSize: "12px",
+  gap: "8px",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  lineHeight: "1",
+});
+const sm = css({
+  padding: "16px",
+  height: "40px",
+  fontSize: "14px",
+  gap: "10px",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  lineHeight: "1",
+});
+const md = css({
+  padding: "20px",
+  height: "48px",
+  fontSize: "16px",
+  gap: "12px",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  lineHeight: "1",
+});
+const lg = css({
+  padding: "24px",
+  height: "56px",
+  fontSize: "18px",
+  gap: "14px",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  lineHeight: "1",
+});
+const xl = css({
+  padding: "32px",
+  height: "72px",
+  fontSize: "20px",
+  gap: "16px",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  lineHeight: "1",
+});
 
 // -----------------------------------------------------------------------------
 // Extra styles
 // -----------------------------------------------------------------------------
-const outlinedStyle = css({ backgroundColor: "transparent", border: "1px solid var(--md-sys-color-outline, rgba(0,0,0,0.12))" });
-const elevatedShadow = css({ boxShadow: "0px 1px 2px rgba(0,0,0,0.12), 0px 2px 1px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.08)" });
+const outlinedStyle = css({
+  backgroundColor: "transparent",
+  outline: "1px solid var(--md-sys-color-outline, rgba(0,0,0,0.12))",
+});
+const elevatedShadow = css({
+  boxShadow:
+    "0px 1px 2px rgba(0,0,0,0.12), 0px 2px 1px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.08)",
+});
 
 // Base interactive transitions used for shape morph and states
-const interactiveBase = css({ transition: "background-color 180ms linear, border-radius 180ms ease, box-shadow 180ms cubic-bezier(.2, .8, .2, 1), transform 120ms linear" });
+const interactiveBase = css({
+  transition:
+    "background-color 180ms linear, border-radius 180ms ease, box-shadow 180ms cubic-bezier(.2, .8, .2, 1), transform 120ms linear",
+});
 
 // Disabled style helper
 const disabledClass = css({ opacity: "0.38", pointerEvents: "none" });
-
 
 // -----------------------------------------------------------------------------
 // Component
 // -----------------------------------------------------------------------------
 export default function Button(props: ButtonProperties) {
-  const { parent, text, variant = "tonal", size = "sm", shape = "round", icon, classList, disabled = false } = props;
+  const {
+    parent,
+    text,
+    variant = "tonal",
+    size = "sm",
+    shape = "round",
+    icon,
+    classList,
+    disabled = false,
+  } = props;
 
   const button = h.Button(parent, text ?? "") as HTMLButtonElement;
 
-  // external classes
   if (classList && classList.length) button.classList.add(...classList);
 
-  // size class
   switch (size) {
     case "xsm":
       button.classList.add(xsm);
@@ -72,14 +132,14 @@ export default function Button(props: ButtonProperties) {
   // variant-specific colors & typographic weight
   let background = "transparent";
   let color = "var(--md-sys-color-primary, #000)";
-  let fontWeight: string | number = 500; // medium default
+  let fontWeight: string | number = 500;
   const extras: string[] = [];
 
   switch (variant) {
     case "filled":
       background = "var(--md-sys-color-primary)";
       color = "var(--md-sys-color-on-primary)";
-      fontWeight = 600; // bolder label for filled
+      fontWeight = 600;
       break;
     case "tonal":
       background = "var(--md-sys-color-secondary-container)";
@@ -105,7 +165,6 @@ export default function Button(props: ButtonProperties) {
       break;
   }
 
-  // shape / radius morphing
   let radius = "8px"; // default
   if (shape === "round") {
     radius = "9999px";
@@ -141,7 +200,6 @@ export default function Button(props: ButtonProperties) {
     gap: "8px",
     fontFamily: "inherit",
     fontWeight: String(fontWeight),
-    outline: "none",
   });
 
   button.classList.add(base, interactiveBase, ...extras);
@@ -156,14 +214,22 @@ export default function Button(props: ButtonProperties) {
     button.disabled = false;
   }
 
+
   // accessibility defaults
   if (!button.getAttribute("type")) button.setAttribute("type", "button");
   if (!button.hasAttribute("role")) button.setAttribute("role", "button");
 
-  // icon handling (leading icon)
   if (icon) {
     const iconWrapper = document.createElement("span");
-    iconWrapper.className = css({ display: "inline-flex", width: "20px", height: "20px", alignItems: "center", justifyContent: "center", lineHeight: "0", flexShrink: "0" });
+    iconWrapper.className = css({
+      display: "inline-flex",
+      width: "20px",
+      height: "20px",
+      alignItems: "center",
+      justifyContent: "center",
+      lineHeight: "0",
+      flexShrink: "0",
+    });
     if (typeof icon === "string" && icon.trim().startsWith("<svg")) {
       iconWrapper.innerHTML = icon;
     } else {
@@ -177,7 +243,6 @@ export default function Button(props: ButtonProperties) {
       button.appendChild(iconWrapper);
     }
   }
-
 
   return button;
 }
