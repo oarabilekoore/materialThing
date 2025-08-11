@@ -1,98 +1,99 @@
-type CSSValue = string | number | CSSObject | CSSStyleDeclaration;
-interface CSSObject {
-  [property: string | number]: CSSValue;
+/** A CSS property value can be a string or a number. */
+type CSSPropertyValue = string | number;
+
+/**
+ * A CSSObject represents a style block. It can contain:
+ * - Standard CSS properties (e.g., `backgroundColor: 'red'`).
+ * - Nested pseudo-classes (e.g., `':hover': { color: 'blue' }`).
+ * - Nested media queries (e.g., `'@media (min-width: 768px)': { ... }`).
+ */
+export interface CSSObject {
+  [property: string]: CSSPropertyValue | CSSObject;
 }
 
-const style = document.head.appendChild(document.createElement("style"));
+type KeyframeSteps = Record<string, CSSObject>;
 
-// We use a hashing algorithim; djb2 to generate classnames, because
-// crypto.randomUUID is not as OP as i thought. -> The styles keep
-// changing on every refresh.
+const sheet = document.head.appendChild(document.createElement("style")).sheet!;
+const cache = new Map<string, string>();
 
-function generateclassname(object: any): string {
-  const stringifiedobject = JSON.stringify(object);
-  const str = stringifiedobject;
+function djb2(str: string): number {
   let hash = 5381;
-
-  // The hash seed of djb2 starts at 5381, 33 is a magic number, we
-  // power it using charCodeAt beacuse it gives the UTF-16 code for
-  // a character, the loop turns str into a 32-bit number
   for (let i = 0; i < str.length; i++) {
     hash = (hash * 33) ^ str.charCodeAt(i);
   }
-
-  // Added gg as starter in our classname cause good game lol, i
-  // learnt alot, i even decided to document ts.
-  // hah >>> 0 forces the 32 bit number into an unsinged 32 bit
-  // number, plus toString(36), converts the number into a
-  // base 32 string.
-  return "gg" + (hash >>> 0).toString(36).slice(-6);
+  return hash;
 }
 
-export default function css(css: Partial<CSSValue & CSSObject>, classname?: string) {
-  if (!css && typeof css !== "object" && Array.isArray(css)) {
-    throw Error("The parameter passed into the $css function is not an object or is null.");
+function camelToKebab(str: string): string {
+  return str.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, "$1-$2").toLowerCase();
+}
+
+function parseStyleObject(styleObject: CSSObject): string {
+  let cssText = "";
+  for (const [key, value] of Object.entries(styleObject)) {
+    // Nested objects are handled by the main `css` function, so we only parse primitives here.
+    if (typeof value === "string" || typeof value === "number") {
+      cssText += `${camelToKebab(key)}:${value};`;
+    }
   }
+  return cssText;
+}
 
-  let rulename = classname ?? generateclassname(css);
-  let cssRules = "";
+export function keyframes(steps: KeyframeSteps): string {
+  const key = JSON.stringify(steps);
+  if (cache.has(key)) return cache.get(key)!;
 
-  for (const [key, value] of Object.entries(css)) {
-    if (key.startsWith("@")) {
-      if (typeof value !== "object" || value == null) continue;
-      const mediaRule = `@media ${key.slice(1)} { .${rulename} { ${mediaquery_parser(value)} } }`;
-      cssRules += mediaRule + "\n";
-    } else if (key.startsWith("&")) {
-      if (typeof value !== "object" || value == null) continue;
-      const selector = key.replace("&", "");
-      const pseudoRule = `.${rulename}${selector} { ${pseudoclass_parser(value)} }`;
-      cssRules += pseudoRule + "\n";
+  const name = `gg-anim-${(djb2(key) >>> 0).toString(36)}`;
+  const rule = `@keyframes ${name}{${Object.entries(steps)
+    .map(([step, styles]) => `${step}{${parseStyleObject(styles)}}`)
+    .join("")}}`;
+
+  try {
+    sheet.insertRule(rule, sheet.cssRules.length);
+    cache.set(key, name);
+  } catch (e) {
+    console.error("Failed to insert keyframes rule:", e);
+  }
+  return name;
+}
+
+export default function css(styleObject: CSSObject): string {
+  const key = JSON.stringify(styleObject);
+  if (cache.has(key)) return cache.get(key)!;
+
+  const className = `gg-${(djb2(key) >>> 0).toString(36)}`;
+  const baseStyles: CSSObject = {};
+  const nestedRules: string[] = [];
+
+  for (const [property, value] of Object.entries(styleObject)) {
+    // TypeScript's control flow analysis correctly narrows the type of `value` here.
+    if (typeof value === "object" && value !== null) {
+      const rule = property.startsWith("@")
+        ? `${property}{.${className}{${parseStyleObject(value as CSSObject)}}}`
+        : `.${className}${property.replace(
+            "&",
+            "",
+          )}{${parseStyleObject(value as CSSObject)}}`;
+      nestedRules.push(rule);
     } else {
-      const normalRule = `.${rulename} { ${general_parser(key, value)} }`;
-      cssRules += normalRule + "\n";
+      baseStyles[property] = value;
     }
   }
 
-  style.textContent += cssRules;
-  return rulename;
-}
-
-function camelcase_to_kebab_case(str: string) {
-  const chars = [];
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (char) {
-      if (char >= "A" && char <= "Z") {
-        chars.push("-", char.toLowerCase());
-      } else {
-        chars.push(char);
-      }
+  try {
+    if (Object.keys(baseStyles).length) {
+      sheet.insertRule(
+        `.${className}{${parseStyleObject(baseStyles)}}`,
+        sheet.cssRules.length,
+      );
     }
+    nestedRules.forEach((rule) =>
+      sheet.insertRule(rule, sheet.cssRules.length),
+    );
+    cache.set(key, className);
+  } catch (e) {
+    console.error("Failed to insert CSS rule:", e);
   }
-  return chars.join("");
-}
 
-function general_parser(key: string, value: any) {
-  if (key.startsWith("--")) {
-    return `${key}: ${value};`;
-  }
-  const valStr = String(value).trim();
-  const [val, important] = valStr.split(" !important");
-  return `${camelcase_to_kebab_case(key)}: ${val}${important !== undefined ? " !important" : ""};`;
-}
-
-function mediaquery_parser(value: any) {
-  let rule = "";
-  for (const prop in value) {
-    rule += `${general_parser(prop, value[prop])} `;
-  }
-  return rule.trim();
-}
-
-function pseudoclass_parser(value: any) {
-  let rule = "";
-  for (const k in value) {
-    rule += `${general_parser(k, value[k])} `;
-  }
-  return rule.trim();
+  return className;
 }

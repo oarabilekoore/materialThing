@@ -7,17 +7,54 @@
 @import url("./css/light.css");
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
 
-  color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    color-scheme: dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Button radii */
+    --button-radius-xsm: 8px;
+    --button-radius-sm: 8px;
+    --button-radius-md: 12px;
+    --button-radius-lg: 16px;
+    --button-radius-xl: 16px;
+
+    /* Button heights */
+    --button-height-xsm: 32px;
+    --button-height-sm: 40px;
+    --button-height-md: 48px;
+    --button-height-lg: 56px;
+    --button-height-xl: 72px;
+
+    /* Button font sizes */
+    --button-font-size-xsm: 12px;
+    --button-font-size-sm: 14px;
+    --button-font-size-md: 16px;
+    --button-font-size-lg: 18px;
+    --button-font-size-xl: 20px;
+
+    /* Button paddings */
+    --button-padding-xsm: 12px;
+    --button-padding-sm: 16px;
+    --button-padding-md: 20px;
+    --button-padding-lg: 24px;
+    --button-padding-xl: 32px;
+
+    /* Font weights */
+    --button-text-weight-md: 500;
+    --button-text-weight-lg: 600;
+
+    /* State layer opacities */
+    --state-opacity-hover: 0.08;
+    --state-opacity-focus: 0.12;
+    --state-opacity-pressed: 0.12;
+    --state-opacity-dragged: 0.16;
 }
-
