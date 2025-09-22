@@ -4,14 +4,13 @@ A lightweight, pure JavaScript UI library that combines the flexibility of vanil
 
 ## ✨ Features
 
-- **🚀 Zero Dependencies** - Pure JavaScript with no external runtime dependencies
-- **🎨 CSS-in-JS** - Dynamic styling with automatic class generation and caching
-- **📱 Material Design** - Built-in Material Design 3 components and theming
-- **⚡ Reactive State** - Signal-based state management with automatic dependency tracking
-- **🧩 Component System** - Reusable components with props and lifecycle management
-- **🛣️ Client-Side Routing** - Built-in browser router for single-page applications
-- **🔧 TypeScript Ready** - Full TypeScript support with proper type definitions
-- **📦 Modular Architecture** - Use only what you need with tree-shakable modules
+- **CSS-in-JS** - Dynamic styling with automatic class generation and caching
+- **Material Design** - Built-in Material Design 3 components and theming
+- **Reactive State** - Signal-based state management with automatic dependency tracking
+- **Component System** - Reusable components with props and lifecycle management
+- **Client-Side Routing** - Built-in browser router for single-page applications
+- **TypeScript Ready** - Full TypeScript support with proper type definitions
+- **Modular Architecture** - Use only what you need with tree-shakable modules
 
 ## 🚀 Quick Start
 
@@ -315,7 +314,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Inspired by modern reactive frameworks while maintaining vanilla JS simplicity
 - Material Design 3 specifications from Google
 - Community feedback and contributions
-
----
-
-**materialThing** - *Build beautiful, reactive UIs with pure JavaScript* 🚀
