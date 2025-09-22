@@ -2,6 +2,8 @@
 
 This is the compiler package for materialThing - it allows for compilation for the materialThing jsx language extension (.mtx).
 
+I'm planning on using participle (Go parser generator) to parse the .mtx language and transpile to .tsx
+
 ## Defining The .mtx Language Format
 
 The mtx format is an addition and modifications on top of JSX, providing a more concise and expressive syntax for defining components and their properties. It also includes support for advanced features such as conditional rendering, looping, and event handling.
