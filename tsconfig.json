@@ -8,25 +8,32 @@
 
     /* JSX setup */
     "jsx": "react-jsx",
-    "jsxFactory": "jsx",
-    "jsxFragmentFactory": "Fragment",
-    "jsxImportSource": "./packages/jsx/jsx-runtime.ts",
+    "jsxImportSource": "packages/jsx",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
 
     /* Bundler / module resolution */
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
+    "resolveJsonModule": true,
 
     /* Strictness & linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Path mapping */
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["packages/core/*"],
+      "@ui/*": ["packages/ui/*"],
+      "@jsx/*": ["packages/jsx/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src", "packages"]
 }

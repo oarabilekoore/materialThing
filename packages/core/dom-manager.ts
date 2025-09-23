@@ -1,4 +1,8 @@
-function parseArguments(args: any[]): { parent?: any; text?: string; children?: Array<any> } {
+function parseArguments(args: any[]): {
+  parent?: HTMLElement;
+  text?: string;
+  children?: Array<any>;
+} {
   let parent: HTMLElement | undefined;
   let text: string | undefined;
   let children: Array<any> | undefined;
@@ -6,11 +10,9 @@ function parseArguments(args: any[]): { parent?: any; text?: string; children?: 
   for (const arg of args) {
     if (arg instanceof HTMLElement) {
       parent = arg;
-    }
-    if (typeof arg === "string") {
+    } else if (typeof arg === "string") {
       text = arg;
-    }
-    if (Array.isArray(arg)) {
+    } else if (Array.isArray(arg)) {
       children = arg;
     }
   }
@@ -22,25 +24,42 @@ function parseArguments(args: any[]): { parent?: any; text?: string; children?: 
  * @param tag
  * @returns
  */
-export function genericElement<T>(tag: string) {
-  return (...args: any[]) => {
+export function genericElement<T extends HTMLElement>(tag: string) {
+  return (...args: any[]): T => {
     const { parent, text, children } = parseArguments(args);
     return createElement<T>({ tag, text, children, parent });
   };
 }
 
-function createElement<T>(data: { tag: string; parent?: any; text?: string; children?: HTMLElement[] }): T {
+function createElement<T extends HTMLElement>(data: {
+  tag: string;
+  parent?: HTMLElement;
+  text?: string;
+  children?: HTMLElement[];
+}): T {
   const { tag, parent, text, children } = data;
-  const element = document.createElement(tag);
-  text ? (element.textContent = text) : null;
-  parent ? parent.appendChild(element) : null;
-  children ? appendchildren() : null;
+  const element = document.createElement(tag) as T;
 
-  function appendchildren() {
-    const masterparent = element;
-    for (const child in children) {
-      masterparent.appendChild(child as unknown as HTMLElement);
+  if (text) {
+    element.textContent = text;
+  }
+
+  if (parent) {
+    parent.appendChild(element);
+  }
+
+  if (children && children.length > 0) {
+    appendChildren();
+  }
+
+  function appendChildren() {
+    if (!children) return;
+    for (const child of children) {
+      if (child instanceof Node) {
+        element.appendChild(child);
+      }
     }
   }
-  return element as T;
+
+  return element;
 }

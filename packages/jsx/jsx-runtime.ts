@@ -1,41 +1,56 @@
-import h from "../core/html-elements.ts";
-import css, { CSSObject } from "../core/css-manager.ts";
-
+import h from "../core/html-elements";
+import css from "../core/css-manager";
+import type { CSSObject } from "../core/css-manager";
 function setProps(el: HTMLElement, props: any) {
   if (!props) return;
 
   for (const [k, v] of Object.entries(props)) {
     if (k === "children") {
-      (Array.isArray(v) ? v : [v]).forEach((child) => {
-        if (child == null) return;
+      const children = Array.isArray(v) ? v : [v];
+      children.forEach((child) => {
+        if (child == null || child === false || child === true) return;
         if (typeof child === "string" || typeof child === "number") {
           el.appendChild(document.createTextNode(String(child)));
-        } else {
+        } else if (child instanceof Node) {
           el.appendChild(child);
         }
       });
     }
-
     // Hook into css manager
     else if (k === "style" && typeof v === "object" && v !== null) {
       const className = css(v as CSSObject);
       el.classList.add(className);
     }
-
-    // `class` prop
-    else if (k === "class") {
-      el.classList.add(...(Array.isArray(v) ? v : [v]));
+    // `class` or `className` prop
+    else if (k === "class" || k === "className") {
+      if (typeof v === "string") {
+        // Split by spaces to handle multiple classes
+        v.split(/\s+/)
+          .filter(Boolean)
+          .forEach((cls) => el.classList.add(cls));
+      } else if (Array.isArray(v)) {
+        v.filter(Boolean).forEach((cls) => el.classList.add(cls));
+      }
     }
-
     // Handle event listeners like `onClick`
     else if (k.startsWith("on") && typeof v === "function") {
-      el.addEventListener(k.slice(2).toLowerCase(), v);
+      const eventName = k.slice(2).toLowerCase();
+      el.addEventListener(eventName, v);
     }
-
+    // Handle special HTML attributes
+    else if (k === "htmlFor") {
+      el.setAttribute("for", String(v));
+    }
     // Fallback → assign property/attribute
     else {
       try {
-        (el as any)[k] = v;
+        // Try to set as property first
+        if (k in el) {
+          (el as any)[k] = v;
+        } else {
+          // Fall back to attribute
+          el.setAttribute(k, String(v));
+        }
       } catch {
         el.setAttribute(k, String(v));
       }
@@ -44,33 +59,57 @@ function setProps(el: HTMLElement, props: any) {
 }
 
 export function jsx(type: any, props: any, key?: string) {
+  // Handle fragments
+  if (type === Fragment) {
+    return Fragment(props || {});
+  }
+
   // Intrinsic HTML elements
   if (typeof type === "string") {
+    // Get the factory function from h namespace
     const factory = (h as any)[capitalize(type)];
     if (!factory) {
-      throw new Error(`Unknown element type: ${type}`);
+      console.warn(`Unknown element type: ${type}, creating generic element`);
+      const el = document.createElement(type);
+      setProps(el, props);
+      return el;
     }
+
+    // Create element using factory (without parent parameter)
     const el = factory();
     setProps(el, props);
     return el;
   }
 
   // Components (functions/classes)
-  return type(props);
+  if (typeof type === "function") {
+    return type(props || {});
+  }
+
+  throw new Error(`Invalid JSX element type: ${typeof type}`);
 }
 
 export const jsxs = jsx;
 
-export const Fragment = (props: { children: any[] }) => {
+export function Fragment(props: { children?: any }) {
   const frag = document.createDocumentFragment();
-  props.children.forEach((c) => {
-    if (typeof c === "string") frag.appendChild(document.createTextNode(c));
-    else if (c) frag.appendChild(c);
-  });
+  if (props.children) {
+    const children = Array.isArray(props.children)
+      ? props.children
+      : [props.children];
+    children.forEach((child) => {
+      if (child == null || child === false || child === true) return;
+      if (typeof child === "string" || typeof child === "number") {
+        frag.appendChild(document.createTextNode(String(child)));
+      } else if (child instanceof Node) {
+        frag.appendChild(child);
+      }
+    });
+  }
   return frag;
-};
+}
 
-// helper: turn "div" -> "Div" (so JSX `<div>` matches `h.Div()`)
-function capitalize(tag: string) {
+// Helper: turn "div" -> "Div" (so JSX `<div>` matches `h.Div()`)
+function capitalize(tag: string): string {
   return tag.charAt(0).toUpperCase() + tag.slice(1);
 }
