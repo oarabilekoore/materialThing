@@ -1,8 +1,8 @@
-# materialThing Compiler
+# materialThing Compiler For Version 1.00
+
+// This is not yet functional right now we are using pure react inspired jsx
 
 This is the compiler package for materialThing - it allows for compilation for the materialThing jsx language extension (.mtx).
-
-I'm planning on using participle (Go parser generator) to parse the .mtx language and transpile to .tsx
 
 ## Defining The .mtx Language Format
 
