@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
@@ -8,7 +8,7 @@
 
     /* JSX setup */
     "jsx": "react-jsx",
-    "jsxImportSource": "packages/jsx",
+    "jsxImportSource": "../packages/jsx",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
 
@@ -28,12 +28,7 @@
     "noUncheckedSideEffectImports": true,
 
     /* Path mapping */
-    "baseUrl": ".",
-    "paths": {
-      "@core/*": ["packages/core/*"],
-      "@ui/*": ["packages/ui/*"],
-      "@jsx/*": ["packages/jsx/*"]
-    }
+    "baseUrl": "."
   },
-  "include": ["src", "packages"]
+  "include": ["packages"]
 }

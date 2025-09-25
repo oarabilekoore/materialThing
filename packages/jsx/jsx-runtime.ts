@@ -1,6 +1,15 @@
 import h from "../core/html-elements";
 import css from "../core/css-manager";
 import type { CSSObject } from "../core/css-manager";
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: string]: any; // Allows any native HTML element
+    }
+  }
+}
+
 function setProps(el: HTMLElement, props: any) {
   if (!props) return;
 
@@ -24,7 +33,6 @@ function setProps(el: HTMLElement, props: any) {
     // `class` or `className` prop
     else if (k === "class" || k === "className") {
       if (typeof v === "string") {
-        // Split by spaces to handle multiple classes
         v.split(/\s+/)
           .filter(Boolean)
           .forEach((cls) => el.classList.add(cls));
@@ -44,11 +52,9 @@ function setProps(el: HTMLElement, props: any) {
     // Fallback → assign property/attribute
     else {
       try {
-        // Try to set as property first
         if (k in el) {
           (el as any)[k] = v;
         } else {
-          // Fall back to attribute
           el.setAttribute(k, String(v));
         }
       } catch {
@@ -66,7 +72,6 @@ export function jsx(type: any, props: any, key?: string) {
 
   // Intrinsic HTML elements
   if (typeof type === "string") {
-    // Get the factory function from h namespace
     const factory = (h as any)[capitalize(type)];
     if (!factory) {
       console.warn(`Unknown element type: ${type}, creating generic element`);
@@ -75,7 +80,6 @@ export function jsx(type: any, props: any, key?: string) {
       return el;
     }
 
-    // Create element using factory (without parent parameter)
     const el = factory();
     setProps(el, props);
     return el;
@@ -109,7 +113,7 @@ export function Fragment(props: { children?: any }) {
   return frag;
 }
 
-// Helper: turn "div" -> "Div" (so JSX `<div>` matches `h.Div()`)
+// Helper: turn "div" -> "Div"
 function capitalize(tag: string): string {
   return tag.charAt(0).toUpperCase() + tag.slice(1);
 }

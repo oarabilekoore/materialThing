@@ -22,8 +22,6 @@ function App() {
         }) + " dark"
       }
     >
-      <h1>materialThing Demo</h1>
-
       <div
         style={{
           display: "flex",
