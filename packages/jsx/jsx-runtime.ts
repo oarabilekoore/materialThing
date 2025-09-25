@@ -5,7 +5,20 @@ import type { CSSObject } from "../core/css-manager";
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      [elemName: string]: any; // Allows any native HTML element
+      [elemName: string]: {
+        style?: CSSObject | string;
+        className?: string;
+        class?: string;
+        children?: any;
+        [key: string]: any;
+      };
+    }
+    interface ElementAttributesProperty {
+      props: {};
+    }
+
+    interface ElementChildrenAttribute {
+      children: {};
     }
   }
 }
@@ -25,10 +38,14 @@ function setProps(el: HTMLElement, props: any) {
         }
       });
     }
-    // Hook into css manager
-    else if (k === "style" && typeof v === "object" && v !== null) {
-      const className = css(v as CSSObject);
-      el.classList.add(className);
+    // Enhanced style handling - supports both objects and strings
+    else if (k === "style") {
+      if (typeof v === "object" && v !== null) {
+        const className = css(v as CSSObject);
+        el.classList.add(className);
+      } else if (typeof v === "string") {
+        el.setAttribute("style", v);
+      }
     }
     // `class` or `className` prop
     else if (k === "class" || k === "className") {
@@ -39,14 +56,10 @@ function setProps(el: HTMLElement, props: any) {
       } else if (Array.isArray(v)) {
         v.filter(Boolean).forEach((cls) => el.classList.add(cls));
       }
-    }
-    // Handle event listeners like `onClick`
-    else if (k.startsWith("on") && typeof v === "function") {
+    } else if (k.startsWith("on") && typeof v === "function") {
       const eventName = k.slice(2).toLowerCase();
       el.addEventListener(eventName, v);
-    }
-    // Handle special HTML attributes
-    else if (k === "htmlFor") {
+    } else if (k === "htmlFor") {
       el.setAttribute("for", String(v));
     }
     // Fallback → assign property/attribute
@@ -113,7 +126,6 @@ export function Fragment(props: { children?: any }) {
   return frag;
 }
 
-// Helper: turn "div" -> "Div"
 function capitalize(tag: string): string {
   return tag.charAt(0).toUpperCase() + tag.slice(1);
 }

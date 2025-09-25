@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div
-      className={
+      class={
         css({
           display: "flex",
           flexDirection: "column",
