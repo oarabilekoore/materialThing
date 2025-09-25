@@ -2,15 +2,20 @@
 
 A lightweight, pure JavaScript UI library that combines the flexibility of vanilla JS with the power of modern frameworks. Build interactive interfaces without touching the DOM directly through clean, declarative APIs.
 
+[![npm version](https://img.shields.io/npm/v/materialthing.svg)](https://www.npmjs.com/package/materialthing)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
+
 ## ✨ Features
 
 - **CSS-in-JS** - Dynamic styling with automatic class generation and caching
-- **Material Design** - Built-in Material Design 3 components and theming
+- **Material Design 3** - Built-in Material Design components and comprehensive theming
 - **Reactive State** - Signal-based state management with automatic dependency tracking
 - **Component System** - Reusable components with props and lifecycle management
 - **Client-Side Routing** - Built-in browser router for single-page applications
 - **TypeScript Ready** - Full TypeScript support with proper type definitions
-- **Modular Architecture** - Use only what you need with tree-shakable modules
+- **Tree-Shakable** - Modular architecture - use only what you need
+- **JSX Support** - Optional JSX syntax.
 
 ## 🚀 Quick Start
 
@@ -24,7 +29,7 @@ yarn add materialthing
 pnpm add materialthing
 ```
 
-### Basic Usage
+### Basic Usage (Vanilla JS)
 
 ```javascript
 import { div, h1, p } from 'materialthing/core/html-elements';
@@ -50,7 +55,8 @@ function App() {
     parent: container,
     text: 'Get Started',
     variant: 'filled',
-    size: 'lg'
+    size: 'lg',
+    onClick: () => alert('Hello World!')
   });
 
   return container;
@@ -59,12 +65,37 @@ function App() {
 document.getElementById('app')?.appendChild(App());
 ```
 
-## 📦 Package Structure
+### With JSX Support
 
-materialThing is organized into focused packages:
+```jsx
+// main.tsx
+import Button from 'materialthing/ui/button';
 
-### Core (`@materialthing/core`)
-The foundation of materialThing with essential building blocks:
+function App() {
+  const handleClick = () => alert('Button clicked!');
+
+  return (
+    <div style={{
+      display: 'flex',
+      gap: '20px',
+      padding: '20px',
+      backgroundColor: 'var(--md-sys-color-background)'
+    }}>
+      <Button variant="filled" text="Click Me" onClick={handleClick} />
+      <Button variant="outlined" text="Or Me" onClick={handleClick} />
+    </div>
+  );
+}
+
+document.getElementById('app')?.appendChild(<App />);
+```
+
+## 📦 Architecture
+
+materialThing is organized into focused, modular packages:
+
+### 🏗️ Core (`@materialthing/core`)
+The foundation with essential building blocks:
 
 - **HTML Elements** - Type-safe wrappers for all HTML elements
 - **CSS Manager** - CSS-in-JS with automatic class generation and keyframes
@@ -72,14 +103,14 @@ The foundation of materialThing with essential building blocks:
 - **DOM Router** - Client-side routing for SPAs
 - **Error Handling** - Comprehensive error management system
 
-### UI Components (`@materialthing/ui`)
+### 🎨 UI Components (`@materialthing/ui`)
 Material Design 3 components built with core:
 
 - **Button** - Multiple variants (filled, outlined, text, elevated, tonal)
 - **FAB** - Floating Action Button with expanding menu support
 - **More components coming soon...**
 
-### MTX Compiler (`@materialthing/mtx`)
+### ⚙️ MTX Compiler (`@materialthing/mtx`)
 JSX-like syntax extension for enhanced developer experience:
 
 ```jsx
@@ -97,9 +128,12 @@ export component Welcome(props: { name: string }) {
 }
 ```
 
+### 🖥️ CLI Tools (`@materialthing/mcd`)
+Command-line interface for project management and scaffolding.
+
 ## 🎨 CSS-in-JS System
 
-Dynamic styling with automatic optimization:
+Dynamic styling with automatic optimization and Material Design integration:
 
 ```javascript
 import { css, keyframes } from 'materialthing/core/css-manager';
@@ -195,9 +229,9 @@ Card({
 });
 ```
 
-## 🎨 Material Design Theming
+## 🎨 Material Design 3 Theming
 
-Built-in Material Design 3 color tokens and theming:
+Built-in Material Design 3 color tokens and comprehensive theming:
 
 ```css
 /* Apply theme classes to your root element */
@@ -215,6 +249,14 @@ const themed = css({
   borderColor: 'var(--md-sys-color-outline)'
 });
 ```
+
+### Available Theme Variants
+- **Light** - Standard light theme
+- **Dark** - Standard dark theme
+- **Light Medium Contrast** - Enhanced contrast for light theme
+- **Light High Contrast** - Maximum contrast for accessibility
+- **Dark Medium Contrast** - Enhanced contrast for dark theme
+- **Dark High Contrast** - Maximum contrast for dark theme accessibility
 
 ## 🛣️ Client-Side Routing
 
@@ -271,6 +313,22 @@ const derived = computed(() => /* computation */);
 effect(() => /* side effect */);
 ```
 
+### UI Components
+```javascript
+import Button from 'materialthing/ui/button';
+import FAB from 'materialthing/ui/fab';
+
+// Button variants: filled, outlined, text, elevated, tonal
+// Button sizes: xsm, sm, md, lg, xl
+Button({
+  parent: container,
+  text: 'Click me',
+  variant: 'filled',
+  size: 'lg',
+  onClick: handleClick
+});
+```
+
 ## 🏗️ Development Setup
 
 ```bash
@@ -291,6 +349,27 @@ npm run build
 npm test
 ```
 
+## 📁 Project Structure
+
+```
+materialthing/
+├── packages/
+│   ├── core/                 # Core library
+│   │   ├── css-manager.ts    # CSS-in-JS system
+│   │   ├── html-elements.ts  # HTML element wrappers
+│   │   ├── state-manager.ts  # Reactive state system
+│   │   └── dom-router.ts     # Client-side routing
+│   ├── ui/                   # UI components
+│   │   ├── button.ts         # Button component
+│   │   └── fab.ts            # Floating Action Button
+│   ├── jsx/                  # JSX runtime
+│   │   └── jsx-runtime.ts    # JSX transformation
+│   └── mcd/                  # CLI tools
+└── src/                      # Example application
+    ├── css/                  # Material Design themes
+    └── main.tsx              # Demo application
+```
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
@@ -305,6 +384,12 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 7. Push to your branch (`git push origin feature/amazing-feature`)
 8. Open a Pull Request
 
+### Code Style
+- Use TypeScript for type safety
+- Follow existing naming conventions
+- Write comprehensive tests
+- Document new features
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -312,5 +397,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - Inspired by modern reactive frameworks while maintaining vanilla JS simplicity
-- Material Design 3 specifications from Google
+- [Material Design 3](https://m3.material.io/) specifications from Google
+- [Signals](https://github.com/tc39/proposal-signals) proposal for reactive primitives
 - Community feedback and contributions
+
+## 🔗 Links
+
+- [Documentation](https://materialthing.dev/docs)
+- [Examples](https://materialthing.dev/examples)
+- [Material Design 3](https://m3.material.io/)
+- [Contributing Guide](CONTRIBUTING.md)
+
+---
+
+**materialThing** - Building beautiful, accessible UIs with vanilla JavaScript and Material Design 3.
