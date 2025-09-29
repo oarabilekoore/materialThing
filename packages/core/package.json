@@ -1,0 +1,55 @@
+{
+  "name": "@materialthing/core",
+  "version": "1.0.0",
+  "description": "Core utilities for MaterialThing framework",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./css": {
+      "import": "./dist/css-manager.js",
+      "types": "./dist/css-manager.d.ts"
+    },
+    "./dom": {
+      "import": "./dist/dom-manager.js",
+      "types": "./dist/dom-manager.d.ts"
+    },
+    "./elements": {
+      "import": "./dist/html-elements.js",
+      "types": "./dist/html-elements.d.ts"
+    },
+    "./state": {
+      "import": "./dist/state-manager.js",
+      "types": "./dist/state-manager.d.ts"
+    },
+    "./router": {
+      "import": "./dist/dom-router.js",
+      "types": "./dist/dom-router.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "dom",
+    "css-in-js",
+    "state-management",
+    "router"
+  ],
+  "author": "Oarabile Koore",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

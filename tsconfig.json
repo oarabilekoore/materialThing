@@ -1,37 +1,35 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
 
-    /* JSX setup */
-    "jsx": "react-jsx",
-    "jsxImportSource": ".",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-
     /* Bundler / module resolution */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
     "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
 
     /* Strictness & linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
+    "noUncheckedIndexedAccess": true,
 
     /* Path mapping */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./packages/*"]
+      "@materialthing/core": ["./packages/core"],
+      "@materialthing/jsx": ["./packages/jsx"],
+      "@materialthing/ui": ["./packages/ui"]
     }
   },
-  "include": ["packages", "src", "*.ts"]
+  "include": [],
+  "references": [{ "path": "./packages/core" }, { "path": "./packages/jsx" }]
 }

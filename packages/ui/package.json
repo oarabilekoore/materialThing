@@ -1,0 +1,39 @@
+{
+  "name": "@materialthing/ui",
+  "version": "1.0.0",
+  "description": "Material Design UI components for MaterialThing",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@materialthing/core": "workspace:*",
+    "material-icons": "^1.13.14"
+  },
+  "keywords": [
+    "ui-components",
+    "material-design",
+    "button",
+    "fab"
+  ],
+  "author": "Oarabile Koore",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}
