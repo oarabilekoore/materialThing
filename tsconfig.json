@@ -8,7 +8,7 @@
 
     /* JSX setup */
     "jsx": "react-jsx",
-    "jsxImportSource": "../packages/jsx",
+    "jsxImportSource": ".",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
 
@@ -28,7 +28,10 @@
     "noUncheckedSideEffectImports": true,
 
     /* Path mapping */
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./packages/*"]
+    }
   },
-  "include": ["packages"]
+  "include": ["packages", "src", "*.ts"]
 }
