@@ -1,6 +1,6 @@
 // src/main.tsx
-import css from "../packages/core/css-manager";
-import Button from "../packages/ui/button";
+import css from "../../packages/core/css-manager";
+import Button from "../../packages/ui/button";
 
 function App() {
   const handleClick = () => {
