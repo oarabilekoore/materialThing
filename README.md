@@ -4,7 +4,7 @@
 
 Unlike traditional frameworks that rely on a Virtual DOM (VDOM), MaterialThing uses a custom **JSX Runtime** to compile directly to native DOM nodes. It combines fine-grained reactivity with an intelligent CSS-in-JS engine to ensure your apps are fast, type-safe, and style-conflict-free.
 
----
+
 
 ## 🚀 Key Features
 
@@ -14,7 +14,7 @@ Unlike traditional frameworks that rely on a Virtual DOM (VDOM), MaterialThing u
 - **Integrated UI Kit:** Comes with a ready-to-use set of Material Design inspired components (`@materialthing/ui`).
 - **TypeScript First:** Built completely in TypeScript for robust type safety.
 
----
+
 
 ## 📦 Installation
 
