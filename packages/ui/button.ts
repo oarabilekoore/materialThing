@@ -1,6 +1,6 @@
 // packages/ui/button.ts
 import h from "../core/html-elements";
-import css, { keyframes } from "../core/css-manager";
+import { css, keyframes } from "../core/css-manager";
 import type { materialThingElement } from "./+ui-manager";
 
 interface ButtonProperties extends materialThingElement {
@@ -218,7 +218,7 @@ export default function Button(props: ButtonProperties): HTMLButtonElement {
     baseButtonClass,
     sizeStyles[size],
     variantStyles[variant],
-    ...classList,
+    ...classList
   );
 
   if (shape === "pill") {

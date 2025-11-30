@@ -1,12 +1,7 @@
-// src/main.tsx
-import css from "../../packages/core/css-manager";
-import Button from "../../packages/ui/button";
+import { css, signal } from "@materialthing/core";
+import { Button } from "@materialthing/ui";
 
 function App() {
-  const handleClick = () => {
-    alert("Button clicked!");
-  };
-
   return (
     <div
       style={{
@@ -28,40 +23,15 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Button
-          variant="filled"
-          size="lg"
-          text="Filled Button"
-          onClick={handleClick}
-        />
+        <Button variant="filled" size="lg" text="Filled Button" />
 
-        <Button
-          variant="outlined"
-          size="lg"
-          text="Outlined Button"
-          onClick={handleClick}
-        />
+        <Button variant="outlined" size="lg" text="Outlined Button" />
 
-        <Button
-          variant="tonal"
-          size="lg"
-          text="Tonal Button"
-          onClick={handleClick}
-        />
+        <Button variant="tonal" size="lg" text="Tonal Button" />
 
-        <Button
-          variant="text"
-          size="lg"
-          text="Text Button"
-          onClick={handleClick}
-        />
+        <Button variant="text" size="lg" text="Text Button" />
 
-        <Button
-          variant="elevated"
-          size="lg"
-          text="Elevated Button"
-          onClick={handleClick}
-        />
+        <Button variant="elevated" size="lg" text="Elevated Button" />
       </div>
 
       <div
@@ -72,16 +42,11 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Button variant="filled" size="sm" text="Small" onClick={handleClick} />
+        <Button variant="filled" size="sm" text="Small" />
 
-        <Button
-          variant="filled"
-          size="md"
-          text="Medium"
-          onClick={handleClick}
-        />
+        <Button variant="filled" size="md" text="Medium" />
 
-        <Button variant="filled" size="lg" text="Large" onClick={handleClick} />
+        <Button variant="filled" size="lg" text="Large" />
       </div>
     </div>
   );

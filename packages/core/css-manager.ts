@@ -57,7 +57,7 @@ export function keyframes(steps: KeyframeSteps): string {
   return name;
 }
 
-export default function css(styleObject: CSSObject): string {
+export function css(styleObject: CSSObject): string {
   const key = JSON.stringify(styleObject);
   if (cache.has(key)) return cache.get(key)!;
 
@@ -70,10 +70,9 @@ export default function css(styleObject: CSSObject): string {
     if (typeof value === "object" && value !== null) {
       const rule = property.startsWith("@")
         ? `${property}{.${className}{${parseStyleObject(value as CSSObject)}}}`
-        : `.${className}${property.replace(
-            "&",
-            "",
-          )}{${parseStyleObject(value as CSSObject)}}`;
+        : `.${className}${property.replace("&", "")}{${parseStyleObject(
+            value as CSSObject
+          )}}`;
       nestedRules.push(rule);
     } else {
       baseStyles[property] = value;
@@ -84,11 +83,11 @@ export default function css(styleObject: CSSObject): string {
     if (Object.keys(baseStyles).length) {
       sheet.insertRule(
         `.${className}{${parseStyleObject(baseStyles)}}`,
-        sheet.cssRules.length,
+        sheet.cssRules.length
       );
     }
     nestedRules.forEach((rule) =>
-      sheet.insertRule(rule, sheet.cssRules.length),
+      sheet.insertRule(rule, sheet.cssRules.length)
     );
     cache.set(key, className);
   } catch (e) {

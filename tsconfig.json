@@ -1,35 +1,28 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": true,
+    /* Base Options */
+    "target": "ESNext",
     "module": "ESNext",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "skipLibCheck": true,
-
-    /* Bundler / module resolution */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-
-    /* Strictness & linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
 
-    /* Path mapping */
+    /* 1. JSX Configuration (Crucial for your custom engine) */
+    "jsx": "react-jsx",
+    "jsxImportSource": "@materialthing/jsx",
+
+    /* 2. Path Aliases (Must match vite.config.ts) */
     "baseUrl": ".",
     "paths": {
-      "@materialthing/core": ["./packages/core"],
-      "@materialthing/jsx": ["./packages/jsx"],
-      "@materialthing/ui": ["./packages/ui"]
+      "@materialthing/core": ["./packages/core/index.ts"],
+      "@materialthing/ui": ["./packages/ui/index.ts"],
+      "@materialthing/jsx": ["./packages/jsx/index.ts"],
+      // This specific path is needed so TS finds your runtime
+      "@materialthing/jsx/jsx-runtime": ["./packages/jsx/jsx-runtime.ts"]
     }
   },
-  "include": [],
-  "references": [{ "path": "./packages/core" }, { "path": "./packages/jsx" }]
+  /* 3. Include your examples so the IDE checks them too */
+  "include": ["packages/**/*", "examples/**/*"],
+  "exclude": ["node_modules", "**/dist/**"]
 }

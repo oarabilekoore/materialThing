@@ -1,5 +1,5 @@
 import h from "../core/html-elements";
-import css from "../core/css-manager";
+import { css } from "../core/css-manager";
 import type { CSSObject } from "../core/css-manager";
 
 declare global {
@@ -58,6 +58,7 @@ function setProps(el: HTMLElement, props: any) {
       }
     } else if (k.startsWith("on") && typeof v === "function") {
       const eventName = k.slice(2).toLowerCase();
+      //@ts-ignore
       el.addEventListener(eventName, v);
     } else if (k === "htmlFor") {
       el.setAttribute("for", String(v));

@@ -1,9 +1,9 @@
-// Material Design Implementation 
+// Material Design Implementation
 // https://m3.material.io/components/floating-action-button/guidelines
 
-import h from "../core/html-elements.ts"
-import css from "../core/css-manager.ts"
-import type { materialThingElement } from "./+ui-manager.ts"
+import h from "../core/html-elements";
+import { css } from "../core/css-manager";
+import type { materialThingElement } from "./+ui-manager.ts";
 
 interface FABButtonProperties extends materialThingElement {
   size?: "default" | "medium" | "large";
@@ -12,21 +12,17 @@ interface FABButtonProperties extends materialThingElement {
 }
 
 export default function FAB(props: FABButtonProperties): HTMLButtonElement {
-  const { size = "default", icon, text, parent, classList } = props
-  const fab = h.Button(parent)
-  text ? console.warn("Text on FAB does not make sense btw.") : null
+  const { size = "default", icon, text, parent, classList } = props;
+  const fab = h.Button(parent);
+  text ? console.warn("Text on FAB does not make sense btw.") : null;
 
-  if (classList && classList.length > 0) fab.classList.add(...classList)
+  if (classList && classList.length > 0) fab.classList.add(...classList);
 
-  const baseTheme = css({
-
-  })
-  return fab
+  const baseTheme = css({});
+  return fab;
 }
 
 interface ExpandingMenuFABProps extends FABButtonProperties {
-  list: Record<string, string>
+  list: Record<string, string>;
 }
-export function ExapndingMenuFAB(props: ExpandingMenuFABProps) {
-}
-
+export function ExapndingMenuFAB(props: ExpandingMenuFABProps) {}
