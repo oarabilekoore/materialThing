@@ -1,6 +1,6 @@
 {
   "name": "@materialthing/ui",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "Material Design UI components for MaterialThing",
   "type": "module",
   "main": "./dist/index.js",

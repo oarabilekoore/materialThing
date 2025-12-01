@@ -16,7 +16,26 @@ type KeyframeSteps = Record<string, CSSObject>;
 const sheet = document.head.appendChild(document.createElement("style")).sheet!;
 const cache = new Map<string, string>();
 
-function djb2(str: string): number {
+/**
+ * Gets the computed value of a CSS variable.
+ * @param variableName The name of the variable (e.g., "--button-color")
+ * @param element The element to check (defaults to :root / document.documentElement)
+ * @returns The resolved value string (e.g., "#ff0000" or "16px")
+ */
+export function getCssVar(
+  variableName: string,
+  element: HTMLElement = document.documentElement
+): string {
+  const name = variableName.startsWith("--")
+    ? variableName
+    : `--${variableName}`;
+
+  const value = getComputedStyle(element).getPropertyValue(name);
+
+  return value.trim();
+}
+
+export function djb2(str: string): number {
   let hash = 5381;
   for (let i = 0; i < str.length; i++) {
     hash = (hash * 33) ^ str.charCodeAt(i);

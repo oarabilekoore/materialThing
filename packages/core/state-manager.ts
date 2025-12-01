@@ -14,7 +14,7 @@ export interface Signal<T> {
  * function.
  * @param default_value
  */
-export function signal<T>(default_value: T): Signal<T> {
+export function useSignal<T>(default_value: T): Signal<T> {
   const subscribers = new Set<Function>();
   let inner_value = default_value;
 
@@ -25,7 +25,7 @@ export function signal<T>(default_value: T): Signal<T> {
   }
 
   const signalObj = {
-    get: function(): T {
+    get: function (): T {
       if (currentEffect) {
         // If there's an effect currently running, subscribe it to this signal
         // so it gets re-run when this signal changes.
@@ -59,9 +59,11 @@ let currentEffect: Function | null = null;
  * @param fn
  * @param dependencies
  */
-export function effect(fn: Function, dependencies?: Array<Signal<any>>) {
+export function useEffect(fn: Function, dependencies?: Array<Signal<any>>) {
   if (typeof fn !== "function") {
-    throw Error(`Effect cannot be instantiated because; ${fn} is not a function.`);
+    throw Error(
+      `Effect cannot be instantiated because; ${fn} is not a function.`
+    );
   }
 
   const executeEffect = () => {
@@ -91,11 +93,11 @@ export function effect(fn: Function, dependencies?: Array<Signal<any>>) {
  * @param computeFn The function to compute the value.
  * @returns A read-only signal.
  */
-export function computed<T>(computeFn: () => T): Signal<T> {
-  const computedSignal = signal<T>(computeFn());
+export function computeSignal<T>(computeFn: () => T): Signal<T> {
+  const computedSignal = useSignal<T>(computeFn());
 
   // Use effect without dependencies to enable automatic dependency tracking
-  effect(() => {
+  useEffect(() => {
     const newValue = computeFn();
     if (newValue !== computedSignal.get()) {
       computedSignal.set(newValue);

@@ -1,4 +1,3 @@
-import { css, signal } from "@materialthing/core";
 import { Button } from "@materialthing/ui";
 
 function App() {
@@ -23,15 +22,25 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Button variant="filled" size="lg" text="Filled Button" />
+        <Button.Filled variant="filled" size="lg" shape="square">
+          Filled
+        </Button.Filled>
 
-        <Button variant="outlined" size="lg" text="Outlined Button" />
+        <Button.Outlined variant="outlined" size="lg">
+          Outlined
+        </Button.Outlined>
 
-        <Button variant="tonal" size="lg" text="Tonal Button" />
+        <Button.Tonal variant="tonal" size="lg">
+          Tonal
+        </Button.Tonal>
 
-        <Button variant="text" size="lg" text="Text Button" />
+        <Button.Text variant="text" size="lg">
+          Text Button
+        </Button.Text>
 
-        <Button variant="elevated" size="lg" text="Elevated Button" />
+        <Button.Elevated variant="elevated" size="lg">
+          Elevated
+        </Button.Elevated>
       </div>
 
       <div
@@ -42,11 +51,17 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Button variant="filled" size="sm" text="Small" />
+        <Button.Filled variant="filled" size="sm">
+          Small
+        </Button.Filled>
 
-        <Button variant="filled" size="md" text="Medium" />
+        <Button variant="filled" size="md">
+          Medium
+        </Button>
 
-        <Button variant="filled" size="lg" text="Large" />
+        <Button variant="filled" size="lg">
+          Large
+        </Button>
       </div>
     </div>
   );
