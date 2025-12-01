@@ -1,6 +1,8 @@
-import { Button } from "@materialthing/ui";
-
+import { createSignal, useComputed } from "@materialthing/core";
 function App() {
+  const [count, setCount] = createSignal(0);
+
+  const doubleCount = useComputed(() => count() * 2);
   return (
     <div
       style={{
@@ -22,46 +24,7 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Button.Filled variant="filled" size="lg" shape="square">
-          Filled
-        </Button.Filled>
-
-        <Button.Outlined variant="outlined" size="lg">
-          Outlined
-        </Button.Outlined>
-
-        <Button.Tonal variant="tonal" size="lg">
-          Tonal
-        </Button.Tonal>
-
-        <Button.Text variant="text" size="lg">
-          Text Button
-        </Button.Text>
-
-        <Button.Elevated variant="elevated" size="lg">
-          Elevated
-        </Button.Elevated>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          gap: "12px",
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        <Button.Filled variant="filled" size="sm">
-          Small
-        </Button.Filled>
-
-        <Button variant="filled" size="md">
-          Medium
-        </Button>
-
-        <Button variant="filled" size="lg">
-          Large
-        </Button>
+        <button onClick={() => setCount((n) => n + 1)}>Count: {count}</button>
       </div>
     </div>
   );

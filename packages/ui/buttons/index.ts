@@ -1,7 +1,7 @@
 // packages/ui/button.ts
 import h from "../../core/html-elements";
+import { useEffect } from "../../core/state-manager"; // Required for reactivity
 import {
-  rippleAnimation,
   rippleClass,
   variantStyles,
   baseButtonClass,
@@ -12,7 +12,7 @@ import {
 
 export interface ButtonProperties
   extends Partial<Omit<HTMLButtonElement, "style" | "className">> {
-  children?: any; // Content of the button
+  children?: any;
   variant?: "filled" | "tonal" | "text" | "elevated" | "outlined";
   size?: "xsm" | "sm" | "md" | "lg" | "xl";
   shape?: "pill" | "square";
@@ -36,7 +36,6 @@ function createRipple(event: MouseEvent, button: HTMLButtonElement) {
   ripple.addEventListener("animationend", () => ripple.remove());
 }
 
-// 3. Main Component Implementation
 function Button(props: ButtonProperties): HTMLButtonElement {
   const {
     variant = "filled",
@@ -52,19 +51,17 @@ function Button(props: ButtonProperties): HTMLButtonElement {
     ...rest
   } = props;
 
-  // Use h.Button() from core or fallback
-  const button = (h as any).Button
-    ? (h as any).Button()
-    : document.createElement("button");
+  // 1. USE h.Button() as requested
+  // We pass empty string for text to ensure it just creates the element
+  const button = (h as any).Button() as HTMLButtonElement;
 
-  // Apply Base Styles
+  // 2. Apply Base Styles (Your Logic)
   button.classList.add(
     baseButtonClass,
     sizeStyles[size],
     variantStyles[variant]
   );
 
-  // Apply className prop
   if (className) {
     if (Array.isArray(className)) {
       button.classList.add(...className);
@@ -73,19 +70,13 @@ function Button(props: ButtonProperties): HTMLButtonElement {
     }
   }
 
-  // Handle Shape (M3 Default is Pill/Stadium)
   if (shape === "pill") {
     button.style.borderRadius = "9999px";
   } else if (shape === "square") {
-    button.style.borderRadius = "4px"; // Slightly rounded for square in M3
+    button.style.borderRadius = "4px";
   }
 
-  // Special handling for Outlined + Disabled to ensure border shows
-  if (disabled && variant === "outlined") {
-    // Logic handled in CSS class merging, but added here for clarity if needed
-  }
-
-  // Handle Content
+  // 3. Handle Content (Updated for Signals)
   const contentFragment = document.createDocumentFragment();
 
   const createIcon = () => {
@@ -95,18 +86,32 @@ function Button(props: ButtonProperties): HTMLButtonElement {
     return iconEl;
   };
 
+  const appendItem = (child: any) => {
+    if (child == null || child === false || child === true) return;
+
+    // --- FIX: DETECT SIGNAL & SUBSCRIBE ---
+    if (typeof child === "function") {
+      const textNode = document.createTextNode("");
+      useEffect(() => {
+        const val = child();
+        textNode.textContent = val != null ? String(val) : "";
+      });
+      contentFragment.appendChild(textNode);
+    }
+    // --- END FIX ---
+    else if (child instanceof Node) {
+      contentFragment.appendChild(child);
+    } else {
+      contentFragment.appendChild(document.createTextNode(String(child)));
+    }
+  };
+
   const appendChildren = () => {
     if (!children) return;
     if (Array.isArray(children)) {
-      children.forEach((child) => {
-        if (typeof child === "string")
-          contentFragment.appendChild(document.createTextNode(child));
-        else if (child instanceof Node) contentFragment.appendChild(child);
-      });
-    } else if (typeof children === "string") {
-      contentFragment.appendChild(document.createTextNode(children));
-    } else if (children instanceof Node) {
-      contentFragment.appendChild(children);
+      children.forEach(appendItem);
+    } else {
+      appendItem(children);
     }
   };
 
@@ -119,7 +124,6 @@ function Button(props: ButtonProperties): HTMLButtonElement {
       button.style.height = heightVal;
       contentFragment.appendChild(iconEl);
     } else {
-      // Icon + Text
       if (iconPosition === "left") {
         contentFragment.appendChild(iconEl);
         appendChildren();
@@ -137,7 +141,6 @@ function Button(props: ButtonProperties): HTMLButtonElement {
   if (disabled) {
     button.disabled = true;
     button.classList.add(disabledClass);
-    // Explicit override for outlined disabled border style if needed by specific CSS parser
     if (variant === "outlined") button.classList.add("outlined");
   } else {
     button.addEventListener("mousedown", (e) => createRipple(e, button));
