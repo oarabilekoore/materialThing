@@ -29,6 +29,35 @@ function isSignal(value: any): value is Accessor<any> {
   return typeof value === "function";
 }
 
+// Helper: Handle Dynamic Children (Swapping Nodes)
+// This enables a Signal to return a DOM Node (like a page) and have it swapped efficiently.
+function handleDynamicChild(parent: Node, signal: Accessor<any>) {
+  // 1. Create a placeholder to mark the spot where the dynamic content goes
+  const placeholder = document.createTextNode("");
+  parent.appendChild(placeholder);
+
+  let currentEl: Node = placeholder;
+
+  // 2. Subscribe to the signal
+  useEffect(() => {
+    const val = signal();
+
+    // 3. Normalize the value:
+    // If it's a DOM Node, use it directly.
+    // If it's a string/number/null, create a TextNode.
+    const newEl =
+      val instanceof Node
+        ? val
+        : document.createTextNode(val != null ? String(val) : "");
+
+    // 4. Swap the elements in the DOM
+    if (currentEl.parentNode) {
+      currentEl.parentNode.replaceChild(newEl, currentEl);
+      currentEl = newEl;
+    }
+  });
+}
+
 // Helper: Apply a single attribute value to an element
 function applyAttribute(el: HTMLElement, k: string, v: any) {
   if (v == null) return;
@@ -43,7 +72,6 @@ function applyAttribute(el: HTMLElement, k: string, v: any) {
     }
   }
   // 2. Class Handling
-  // We set className directly to ensure updates from signals overwrite old values correctly
   else if (k === "class" || k === "className") {
     if (typeof v === "string") {
       el.className = v;
@@ -80,13 +108,8 @@ function setProps(el: HTMLElement, props: any) {
         if (child == null || typeof child === "boolean") return;
 
         if (isSignal(child)) {
-          // REACTIVE CHILD: Create a TextNode that updates automatically
-          const textNode = document.createTextNode("");
-          useEffect(() => {
-            const val = child();
-            textNode.data = val != null ? String(val) : "";
-          });
-          el.appendChild(textNode);
+          // REACTIVE CHILD: Use the new helper to handle Text OR Nodes
+          handleDynamicChild(el, child);
         } else if (typeof child === "string" || typeof child === "number") {
           // STATIC CHILD
           el.appendChild(document.createTextNode(String(child)));
@@ -158,13 +181,8 @@ export function Fragment(props: { children?: any }) {
       if (child == null || typeof child === "boolean") return;
 
       if (isSignal(child)) {
-        // Reactive Fragment Child
-        const textNode = document.createTextNode("");
-        useEffect(() => {
-          const val = child();
-          textNode.data = val != null ? String(val) : "";
-        });
-        frag.appendChild(textNode);
+        // Reactive Fragment Child: Use the new helper
+        handleDynamicChild(frag, child);
       } else if (typeof child === "string" || typeof child === "number") {
         frag.appendChild(document.createTextNode(String(child)));
       } else if (child instanceof Node) {
