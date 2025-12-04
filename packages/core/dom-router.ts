@@ -1,5 +1,17 @@
 import { createSignal, useEffect, Accessor } from "./state-manager";
 
+const REACT_ELEMENT_TYPE = Symbol.for("react.element");
+
+function createVNode(type: any, props: any, key: any = null) {
+  return {
+    $$typeof: REACT_ELEMENT_TYPE,
+    type,
+    key,
+    ref: props.ref,
+    props,
+  };
+}
+
 // --- GLOBAL ROUTER STATE ---
 
 const [currentPath, setCurrentPath] = createSignal(window.location.pathname);
@@ -60,11 +72,14 @@ export function useNavigate() {
   };
 }
 
+// --- COMPONENTS ---
+
 export function Link(props: {
   to: string;
   state?: any;
   children?: any;
   class?: string;
+  className?: string;
 }) {
   const navigate = useNavigate();
 
@@ -73,47 +88,44 @@ export function Link(props: {
     navigate(props.to, props.state);
   };
 
-  const a = document.createElement("a");
-  a.setAttribute("href", props.to);
-  if (props.class) a.className = props.class;
-  a.onclick = onClick as any;
-
-  // Handle simple children
-  if (props.children) {
-    if (typeof props.children === "string") {
-      a.textContent = props.children;
-    } else if (Array.isArray(props.children)) {
-      props.children.forEach((c) => {
-        if (typeof c === "string") a.appendChild(document.createTextNode(c));
-        else if (c instanceof Node) a.appendChild(c);
-      });
-    } else if (props.children instanceof Node) {
-      a.appendChild(props.children);
-    }
-  }
-
-  return a;
+  // Return a VNode instead of a DOM Element
+  return createVNode("a", {
+    href: props.to,
+    className: props.class || props.className,
+    onClick: onClick,
+    children: props.children,
+  });
 }
 
 export function Route(props: {
   path: string;
-  component: (props?: any) => HTMLElement;
+  component: (props?: any) => any; // Component returns VNode now
 }) {
-  return props;
+  return props; // Route is just a data container, effectively
 }
 
-export function Routes(props: { children: any[] }) {
+export function BrowserRouter(props: { children: any[] }) {
+  // props.children will be an array of VNodes (Route components)
+  // We need to look at their props to find the matching path.
+
   const routes = Array.isArray(props.children)
     ? props.children
     : [props.children];
 
+  // We return a function (Component) that the renderer will execute.
+  // This allows the router to reactively update when signals change.
   return () => {
     const path = currentPath();
 
-    // Find the matching route using Regex
+    // Find the matching route
     let matchParams = {};
-    const matchedRoute = routes.find((r) => {
-      const match = matchPath(r.path, path);
+    const matchedRouteVNode = routes.find((r) => {
+      // In the VNode system, 'r' is an object { type: Route, props: { path, component } }
+      // We need to access r.props.path
+      const routePath = r.props?.path;
+      if (!routePath) return false;
+
+      const match = matchPath(routePath, path);
       if (match) {
         matchParams = match.params;
         return true;
@@ -121,15 +133,16 @@ export function Routes(props: { children: any[] }) {
       return false;
     });
 
-    if (matchedRoute && matchedRoute.component) {
+    if (matchedRouteVNode && matchedRouteVNode.props.component) {
       setCurrentParams(matchParams);
 
-      return matchedRoute.component({});
+      // We return a VNode describing it so the renderer can mount it.
+      return createVNode(matchedRouteVNode.props.component, {});
     }
 
     // 404 Fallback
-    const notFound = document.createElement("div");
-    notFound.textContent = `404 - No route matches ${path}`;
-    return notFound;
+    return createVNode("div", {
+      children: `404 - No route matches ${path}`,
+    });
   };
 }

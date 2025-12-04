@@ -1,11 +1,12 @@
 import {
-  Routes,
+  BrowserRouter,
   Route,
   Link,
   useParams,
   useNavigate,
   useLocation,
-} from "../../packages/core";
+  render,
+} from "@materialthing/core";
 
 // --- 1. Home Page ---
 function HomePage() {
@@ -99,12 +100,12 @@ function App() {
         <Link to="/dashboard">Dashboard</Link>
       </nav>
 
-      <Routes>
+      <BrowserRouter>
         <Route path="/" component={HomePage} />
         <Route path="/dashboard" component={Dashboard} />
         {/* The :id segment will be captured by the router */}
         <Route path="/user/:id" component={UserProfile} />
-      </Routes>
+      </BrowserRouter>
     </div>
   );
 }
@@ -112,6 +113,5 @@ function App() {
 // Mount
 const root = document.getElementById("app");
 if (root) {
-  root.innerHTML = ""; // Clear existing content
-  root.appendChild(App());
+  render(<App />, root);
 }

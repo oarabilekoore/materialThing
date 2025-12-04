@@ -1,4 +1,10 @@
-import { createSignal, useComputed, css, keyframes } from "@materialthing/core";
+import {
+  createSignal,
+  useComputed,
+  css,
+  keyframes,
+  render,
+} from "@materialthing/core";
 
 // Animations
 const float = keyframes({
@@ -501,5 +507,5 @@ function App() {
 // Mount the app
 const root = document.getElementById("app");
 if (root) {
-  root.appendChild(App());
+  render(<App />, root);
 }

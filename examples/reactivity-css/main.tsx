@@ -1,4 +1,10 @@
-import { createSignal, useComputed, css, keyframes } from "@materialthing/core";
+import {
+  createSignal,
+  useComputed,
+  css,
+  keyframes,
+  render,
+} from "@materialthing/core";
 
 // Create a simple button component using raw CSS-in-JS
 function CustomButton({ children, onClick, variant = "primary" }) {
@@ -74,10 +80,7 @@ function CustomButton({ children, onClick, variant = "primary" }) {
   };
 
   return (
-    <button
-      className={`${baseClass} ${variantClass}`}
-      onClick={handleClick}
-    >
+    <button className={`${baseClass} ${variantClass}`} onClick={handleClick}>
       {children}
     </button>
   );
@@ -172,13 +175,10 @@ function App() {
           />
 
           <div className={buttonGroupClass}>
-            <CustomButton onClick={() => setCount(c => c + 1)}>
+            <CustomButton onClick={() => setCount((c) => c + 1)}>
               Count: {count}
             </CustomButton>
-            <CustomButton
-              variant="secondary"
-              onClick={() => setCount(0)}
-            >
+            <CustomButton variant="secondary" onClick={() => setCount(0)}>
               Reset
             </CustomButton>
           </div>
@@ -205,7 +205,7 @@ function App() {
 // Mount the app
 const appElement = document.getElementById("app");
 if (appElement) {
-  appElement.appendChild(<App />);
+  render(<App />, appElement);
 } else {
   console.error("Could not find app element");
 }

@@ -1,7 +1,6 @@
 {
   "name": "@materialthing/core",
-  "version": "4.0.0",
-  "description": "Core utilities for MaterialThing framework",
+  "version": "0.0.1",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -9,45 +8,34 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
+    },
+    "./renderer": {
+      "import": "./dist/renderer.js",
+      "require": "./dist/renderer.cjs",
+      "types": "./dist/renderer.d.ts"
     },
     "./css": {
       "import": "./dist/css-manager.js",
+      "require": "./dist/css-manager.cjs",
       "types": "./dist/css-manager.d.ts"
-    },
-    "./dom": {
-      "import": "./dist/dom-manager.js",
-      "types": "./dist/dom-manager.d.ts"
-    },
-    "./elements": {
-      "import": "./dist/html-elements.js",
-      "types": "./dist/html-elements.d.ts"
-    },
-    "./state": {
-      "import": "./dist/state-manager.js",
-      "types": "./dist/state-manager.d.ts"
     },
     "./router": {
       "import": "./dist/dom-router.js",
+      "require": "./dist/dom-router.cjs",
       "types": "./dist/dom-router.d.ts"
     }
   },
   "scripts": {
-    "build": "tsup index.ts css-manager.ts dom-manager.ts html-elements.ts state-manager.ts dom-router.ts --format esm,cjs --dts --dts-resolve --external @materialthing/jsx"
+    "build": "tsup index.ts renderer.ts css-manager.ts state-manager.ts dom-router.ts --format esm,cjs --dts --external @materialthing/jsx",
+    "dev": "tsup index.ts renderer.ts css-manager.ts state-manager.ts dom-router.ts --format esm,cjs --watch --dts --external @materialthing/jsx"
   },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "keywords": [
-    "dom",
-    "css-in-js",
-    "state-management",
-    "router"
-  ],
-  "author": "Oarabile Koore",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@materialthing/jsx": "workspace:*"
   }
 }
