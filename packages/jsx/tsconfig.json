@@ -1,13 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "composite": true,
     "outDir": "./dist",
-    "rootDir": "../",
-
-    "jsx": "react-jsx",
-    "jsxImportSource": "./index.ts"
+    "rootDir": "./",
+    "paths": {
+      "@materialthing/core/*": ["../core/*"]
+    }
   },
-  "include": ["./**/*", "../**/*"],
-  "exclude": ["dist", "node_modules"]
+  "include": ["./**/*.ts", "../core/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

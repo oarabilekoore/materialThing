@@ -1,6 +1,6 @@
 {
   "name": "@materialthing/core",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Core utilities for MaterialThing framework",
   "type": "module",
   "main": "./dist/index.js",
@@ -32,15 +32,15 @@
       "types": "./dist/dom-router.d.ts"
     }
   },
+  "scripts": {
+    "build": "tsup index.ts css-manager.ts dom-manager.ts html-elements.ts state-manager.ts dom-router.ts --format esm,cjs --dts",
+    "dev": "npm run build -- --watch",
+    "clean": "rm -rf dist"
+  },
   "files": [
     "dist",
     "README.md"
   ],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "clean": "rm -rf dist"
-  },
   "keywords": [
     "dom",
     "css-in-js",

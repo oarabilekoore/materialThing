@@ -1,5 +1,16 @@
 # @materialthing/jsx
 
+## 4.0.0
+
+### Major Changes
+
+- Updated JSX runtime to support router implementation(a new feture)
+
+### Patch Changes
+
+- Updated dependencies
+  - @materialthing/core@4.0.0
+
 ## 3.0.0
 
 ### Major Changes
