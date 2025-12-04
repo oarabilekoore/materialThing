@@ -238,7 +238,6 @@ function CustomButton({ children, onClick }) {
 
 ## 🎯 Roadmap
 
-- [ ] Router implementation
 - [ ] Form validation utilities
 - [ ] Transition/animation helpers
 - [ ] Server-side rendering (SSR) support
@@ -256,7 +255,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - Inspired by modern reactive frameworks (Solid.js, Svelte)
-- [Material Design 3](https://m3.material.io/) specifications from Google
 - [Signals](https://github.com/tc39/proposal-signals) proposal for reactive primitives
 
 ## 📖 Documentation

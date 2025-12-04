@@ -25,7 +25,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup index.ts jsx-runtime.ts jsx-dev-runtime.ts --format esm,cjs --dts",
+    "build": "tsup index.ts jsx-runtime.ts jsx-dev-runtime.ts --format esm,cjs --dts --dts-resolve --external @materialthing/core",
     "dev": "npm run build -- --watch",
     "clean": "rm -rf dist"
   },

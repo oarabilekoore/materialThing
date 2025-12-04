@@ -10,13 +10,15 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "npm run build --workspaces",
+    "build": "bun run build:core && bun run build:jsx",
+    "build:core": "cd packages/core && bun run build",
+    "build:jsx": "cd packages/jsx && bun run build",
     "test": "npm run test --workspaces",
     "lint": "eslint packages/**/*.ts",
     "clean": "rm -rf packages/*/dist",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "npm run build && changeset publish"
+    "release": "bun run build && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
@@ -29,9 +31,7 @@
     "tsup": "^8.5.0"
   },
   "keywords": [
-    "ui",
     "framework",
-    "material-design",
     "jsx",
     "typescript",
     "css-in-js"

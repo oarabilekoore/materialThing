@@ -1,28 +1,23 @@
 {
   "compilerOptions": {
-    /* Base Options */
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "strict": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-
-    /* 1. JSX Configuration (Crucial for your custom engine) */
     "jsx": "react-jsx",
     "jsxImportSource": "@materialthing/jsx",
-
-    /* 2. Path Aliases (Must match vite.config.ts) */
     "baseUrl": ".",
     "paths": {
       "@materialthing/core": ["./packages/core/index.ts"],
-      "@materialthing/ui": ["./packages/ui/index.ts"],
+      "@materialthing/core/*": ["./packages/core/*"],
       "@materialthing/jsx": ["./packages/jsx/index.ts"],
-      // This specific path is needed so TS finds your runtime
-      "@materialthing/jsx/jsx-runtime": ["./packages/jsx/jsx-runtime.ts"]
+      "@materialthing/jsx/*": ["./packages/jsx/*"],
+      "@materialthing/ui": ["./packages/ui/index.ts"]
     }
   },
-  /* 3. Include your examples so the IDE checks them too */
-  "include": ["packages/**/*", "examples/**/*"],
-  "exclude": ["node_modules", "**/dist/**"]
+  "include": [],
+  "exclude": ["node_modules", "**/dist/**"],
+  "references": [{ "path": "./packages/core" }, { "path": "./packages/jsx" }]
 }

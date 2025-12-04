@@ -1,7 +1,6 @@
-import h from "../core/html-elements";
-import { css } from "../core/css-manager";
-import { useEffect, type Accessor } from "../core/state-manager";
-import type { CSSObject } from "../core/css-manager";
+import h from "@materialthing/core/elements";
+import { css, type CSSObject } from "@materialthing/core/css";
+import { useEffect, type Accessor } from "@materialthing/core/state";
 
 declare global {
   namespace JSX {

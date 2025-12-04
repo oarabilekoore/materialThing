@@ -33,9 +33,7 @@
     }
   },
   "scripts": {
-    "build": "tsup index.ts css-manager.ts dom-manager.ts html-elements.ts state-manager.ts dom-router.ts --format esm,cjs --dts",
-    "dev": "npm run build -- --watch",
-    "clean": "rm -rf dist"
+    "build": "tsup index.ts css-manager.ts dom-manager.ts html-elements.ts state-manager.ts dom-router.ts --format esm,cjs --dts --dts-resolve --external @materialthing/jsx"
   },
   "files": [
     "dist",
