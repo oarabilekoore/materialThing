@@ -1,6 +1,6 @@
 {
   "name": "@materialthing/jsx",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "JSX runtime for MaterialThing framework",
   "type": "module",
   "main": "./dist/index.js",

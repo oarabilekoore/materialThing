@@ -1,0 +1,43 @@
+{
+  "name": "@materialthing/react",
+  "version": "1.0.0",
+  "description": "React compatibility layer for MaterialThing",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup index.ts --format esm,cjs --dts --external @materialthing/core",
+    "dev": "tsup index.ts --format esm,cjs --watch --dts --external @materialthing/core",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@materialthing/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "react",
+    "compatibility",
+    "hooks",
+    "jsx"
+  ],
+  "author": "Oarabile Koore",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -10,10 +10,10 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "bun run build:core && bun run build:jsx",
+    "build": "bun run build:core && bun run build:jsx && bun run build:react",
     "build:core": "cd packages/core && bun run build",
     "build:jsx": "cd packages/jsx && bun run build",
-    "test": "npm run test --workspaces",
+    "build:react": "cd packages/react && bun run build",
     "lint": "eslint packages/**/*.ts",
     "clean": "rm -rf packages/*/dist",
     "changeset": "changeset",

@@ -14,7 +14,8 @@
       "@materialthing/core/*": ["./packages/core/*"],
       "@materialthing/jsx": ["./packages/jsx/index.ts"],
       "@materialthing/jsx/*": ["./packages/jsx/*"],
-      "@materialthing/ui": ["./packages/ui/index.ts"]
+      "@materialthing/react": ["./packages/react/index.ts"],
+      "@materialthing/react.*": ["./packages/react/*"]
     }
   },
   "include": [],

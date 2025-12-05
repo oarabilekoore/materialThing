@@ -1,3 +1,4 @@
+// packages/core/renderer.ts
 import { Accessor, useEffect } from "./state-manager";
 import { css } from "./css-manager";
 
@@ -10,9 +11,29 @@ type VNode = {
   ref: any;
 };
 
+type Portal = {
+  $$typeof: symbol;
+  key: any;
+  children: any;
+  containerInfo: Element | DocumentFragment;
+  implementation: null;
+};
+
+const REACT_ELEMENT_TYPE = Symbol.for("react.element");
+const REACT_PORTAL_TYPE = Symbol.for("react.portal");
+
 // Helper to detect signals
 function isSignal(val: any): val is Accessor<any> {
   return typeof val === "function";
+}
+
+// Helper to detect portals
+function isPortal(val: any): val is Portal {
+  return (
+    typeof val === "object" &&
+    val !== null &&
+    val.$$typeof === REACT_PORTAL_TYPE
+  );
 }
 
 // --- Main Render API ---
@@ -40,7 +61,12 @@ export function mount(vnode: any): Node | null {
     return document.createTextNode(String(vnode));
   }
 
-  // 2. Handle Signals (Dynamic Component & Text Reactivity)
+  // 2. Handle Portals
+  if (isPortal(vnode)) {
+    return mountPortal(vnode);
+  }
+
+  // 3. Handle Signals (Dynamic Component & Text Reactivity)
   if (isSignal(vnode)) {
     // We start with a placeholder. A comment is safer for layout than empty text.
     const placeholder = document.createComment("signal-placeholder");
@@ -54,7 +80,11 @@ export function mount(vnode: any): Node | null {
       if (typeof val === "object" && val !== null && val.$$typeof) {
         newDom = mount(val);
       }
-      // B. Signal returned a primitive (e.g., Text binding)
+      // B. Signal returned a Portal
+      else if (isPortal(val)) {
+        newDom = mountPortal(val);
+      }
+      // C. Signal returned a primitive (e.g., Text binding)
       else if (typeof val === "string" || typeof val === "number") {
         newDom = document.createTextNode(String(val));
       }
@@ -77,7 +107,7 @@ export function mount(vnode: any): Node | null {
     return currentDom;
   }
 
-  // 3. Handle Arrays (Fragments)
+  // 4. Handle Arrays (Fragments)
   if (Array.isArray(vnode)) {
     const frag = document.createDocumentFragment();
     vnode.forEach((child) => {
@@ -87,7 +117,7 @@ export function mount(vnode: any): Node | null {
     return frag;
   }
 
-  // 4. Handle VNodes
+  // 5. Handle VNodes
   if (typeof vnode === "object" && vnode.$$typeof) {
     // A. Functional Components
     if (typeof vnode.type === "function") {
@@ -128,7 +158,7 @@ export function mount(vnode: any): Node | null {
 
         const value = props[key];
 
-        // Event Handlers
+        // Event Handlers (never signals)
         if (key.startsWith("on") && typeof value === "function") {
           const eventName = key.toLowerCase().substring(2);
           el.addEventListener(eventName, value);
@@ -136,7 +166,12 @@ export function mount(vnode: any): Node | null {
         }
 
         // CSS-in-JS Support
-        if (key === "style" && typeof value === "object" && value !== null) {
+        if (
+          key === "style" &&
+          typeof value === "object" &&
+          value !== null &&
+          !isSignal(value)
+        ) {
           const generatedClass = css(value);
           el.classList.add(generatedClass);
           return;
@@ -144,7 +179,10 @@ export function mount(vnode: any): Node | null {
 
         // Attributes (with Signal support)
         if (isSignal(value)) {
-          useEffect(() => applyAttribute(el, key, value()));
+          // Create reactive binding for signal attributes
+          useEffect(() => {
+            applyAttribute(el, key, value());
+          });
         } else {
           applyAttribute(el, key, value);
         }
@@ -168,14 +206,41 @@ export function mount(vnode: any): Node | null {
   return null;
 }
 
+// --- Portal Mounting ---
+function mountPortal(portal: Portal): Node {
+  // Create a placeholder comment node to return
+  // This represents the portal in the source tree
+  const placeholder = document.createComment("portal");
+
+  // Mount the children into the target container
+  const children = Array.isArray(portal.children)
+    ? portal.children
+    : [portal.children];
+
+  children.forEach((child: any) => {
+    const childDom = mount(child);
+    if (childDom && portal.containerInfo) {
+      portal.containerInfo.appendChild(childDom);
+    }
+  });
+
+  // Return the placeholder for the source location
+  return placeholder;
+}
+
 function applyAttribute(el: Element, key: string, value: any) {
   if (key === "className" || key === "class") {
-    // Append to existing classes (to play nice with style={...})
-    const current = el.getAttribute("class") || "";
-    // Simple dedupe check could go here, but append is safe for now
-    if (!current.includes(String(value))) {
-      el.setAttribute("class", (current + " " + String(value)).trim());
+    // Replace existing classes (to play nice with style={...})
+    el.setAttribute("class", String(value));
+    return;
+  }
+
+  // Special handling for value attribute on form elements
+  if (key === "value") {
+    if ("value" in el) {
+      (el as any).value = value ?? "";
     }
+    el.setAttribute("value", String(value ?? ""));
     return;
   }
 
@@ -185,9 +250,5 @@ function applyAttribute(el: Element, key: string, value: any) {
     el.removeAttribute(key);
   } else {
     el.setAttribute(key, String(value));
-  }
-
-  if (key === "value" && "value" in el) {
-    (el as any).value = value;
   }
 }

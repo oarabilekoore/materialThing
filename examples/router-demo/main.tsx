@@ -8,6 +8,9 @@ import {
   render,
 } from "@materialthing/core";
 
+// Base path constant for easier maintenance
+const BASE_PATH = "/examples/router-demo";
+
 // --- 1. Home Page ---
 function HomePage() {
   const navigate = useNavigate();
@@ -18,13 +21,13 @@ function HomePage() {
       <p>Welcome! Try these dynamic routes:</p>
       <ul>
         <li>
-          <Link to="/user/1">User 1 (Alice)</Link>
+          <Link to={`${BASE_PATH}/user/1`}>User 1 (Alice)</Link>
         </li>
         <li>
-          <Link to="/user/42">User 42 (Bob)</Link>
+          <Link to={`${BASE_PATH}/user/42`}>User 42 (Bob)</Link>
         </li>
         <li>
-          <Link to="/user/100">User 100 (Charlie)</Link>
+          <Link to={`${BASE_PATH}/user/100`}>User 100 (Charlie)</Link>
         </li>
       </ul>
 
@@ -34,8 +37,11 @@ function HomePage() {
       <p>Click below to navigate with hidden state:</p>
       <button
         style="padding: 10px 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px;"
-        onclick={() =>
-          navigate("/dashboard", { isAdmin: true, timestamp: Date.now() })
+        onClick={() =>
+          navigate(`${BASE_PATH}/dashboard`, {
+            isAdmin: true,
+            timestamp: Date.now(),
+          })
         }
       >
         Go to Dashboard (as Admin)
@@ -46,17 +52,23 @@ function HomePage() {
 
 // --- 2. User Profile (Dynamic Params) ---
 function UserProfile() {
-  const params = useParams(); // Returns a Signal
+  const params = useParams();
 
   return (
     <div class="page">
       <h1>User Profile</h1>
-      {/* We use a function to access the signal value reactively */}
+
+      {/* Debug info */}
+      <div style="background: #f0f0f0; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+        <strong>Debug:</strong> params = {() => JSON.stringify(params())}
+      </div>
+
       <p style="font-size: 1.2rem;">
-        Viewing Profile ID: <strong>{() => params().id}</strong>
+        Viewing Profile ID: <strong>{() => params().id || "NO ID"}</strong>
       </p>
+
       <p>
-        <Link to="/">← Back to Home</Link>
+        <Link to={BASE_PATH}>← Back to Home</Link>
       </p>
     </div>
   );
@@ -64,7 +76,7 @@ function UserProfile() {
 
 // --- 3. Dashboard (History State) ---
 function Dashboard() {
-  const location = useLocation(); // Returns { pathname, state } signals
+  const location = useLocation();
 
   return (
     <div class="page" style="background: #e8f5e9;">
@@ -86,7 +98,7 @@ function Dashboard() {
         }
       </p>
 
-      <Link to="/">Logout</Link>
+      <Link to={BASE_PATH}>Logout</Link>
     </div>
   );
 }
@@ -96,15 +108,15 @@ function App() {
   return (
     <div>
       <nav>
-        <Link to="/">Home</Link>
-        <Link to="/dashboard">Dashboard</Link>
+        <Link to={BASE_PATH}>Home</Link>
+        <Link to={`${BASE_PATH}/dashboard`}>Dashboard</Link>
+        <Link to={`${BASE_PATH}/user/42`}>User 42</Link>
       </nav>
 
       <BrowserRouter>
-        <Route path="/" component={HomePage} />
-        <Route path="/dashboard" component={Dashboard} />
-        {/* The :id segment will be captured by the router */}
-        <Route path="/user/:id" component={UserProfile} />
+        <Route path={BASE_PATH} component={HomePage} />
+        <Route path={`${BASE_PATH}/dashboard`} component={Dashboard} />
+        <Route path={`${BASE_PATH}/user/:id`} component={UserProfile} />
       </BrowserRouter>
     </div>
   );

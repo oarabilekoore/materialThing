@@ -7,7 +7,7 @@ function createVNode(type: any, props: any, key: any = null) {
     $$typeof: REACT_ELEMENT_TYPE,
     type,
     key,
-    ref: props.ref,
+    ref: props?.ref,
     props,
   };
 }
@@ -24,13 +24,14 @@ const [currentLocationState, setCurrentLocationState] = createSignal(
   window.history.state
 );
 
+// Listen for browser back/forward
 window.addEventListener("popstate", () => {
   setCurrentPath(window.location.pathname);
   setCurrentLocationState(window.history.state);
 });
 
 function matchPath(routePath: string, actualPath: string) {
-  // route path to regex (e.g. /user/:id -> /^\/user\/([^/]+)$/)
+  // Convert route path to regex (e.g. /user/:id -> /^\/user\/([^/]+)$/)
   const paramNames: string[] = [];
   const regexPath = routePath.replace(/:([^\/]+)/g, (_, key) => {
     paramNames.push(key);
@@ -52,7 +53,7 @@ function matchPath(routePath: string, actualPath: string) {
 
 // --- HOOKS ---
 
-export function useParams() {
+export function useParams(): Accessor<Record<string, string>> {
   return currentParams;
 }
 
@@ -68,6 +69,7 @@ export function useNavigate() {
     window.history.pushState(state || {}, "", path);
     setCurrentPath(path);
     setCurrentLocationState(state || {});
+    // Reset params when navigating - they'll be set by the router
     setCurrentParams({});
   };
 }
@@ -99,44 +101,41 @@ export function Link(props: {
 
 export function Route(props: {
   path: string;
-  component: (props?: any) => any; // Component returns VNode now
+  component: (props?: any) => any;
 }) {
-  return props; // Route is just a data container, effectively
+  return props; // Route is just a data container
 }
 
 export function BrowserRouter(props: { children: any[] }) {
   // props.children will be an array of VNodes (Route components)
-  // We need to look at their props to find the matching path.
-
   const routes = Array.isArray(props.children)
     ? props.children
     : [props.children];
 
-  // We return a function (Component) that the renderer will execute.
-  // This allows the router to reactively update when signals change.
+  // Return a function (Component) that the renderer will execute
+  // This allows the router to reactively update when signals change
   return () => {
     const path = currentPath();
 
-    // Find the matching route
-    let matchParams = {};
+    // Find the matching route and extract params
+    let matchedParams: Record<string, string> = {};
     const matchedRouteVNode = routes.find((r) => {
-      // In the VNode system, 'r' is an object { type: Route, props: { path, component } }
-      // We need to access r.props.path
       const routePath = r.props?.path;
       if (!routePath) return false;
 
       const match = matchPath(routePath, path);
       if (match) {
-        matchParams = match.params;
+        matchedParams = match.params;
         return true;
       }
       return false;
     });
 
     if (matchedRouteVNode && matchedRouteVNode.props.component) {
-      setCurrentParams(matchParams);
+      // CRITICAL: Update params BEFORE rendering the component
+      setCurrentParams(matchedParams);
 
-      // We return a VNode describing it so the renderer can mount it.
+      // Return a VNode describing the matched component
       return createVNode(matchedRouteVNode.props.component, {});
     }
 
